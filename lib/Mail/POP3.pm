@@ -18,7 +18,7 @@ use Mail::POP3::Security::Connection;
 # UIDL is the Message-ID
 
 use vars qw($VERSION);
-$VERSION = "3.0";
+$VERSION = "3.01";
 
 sub read_config {
     my ($class, $config_text) = @_;
@@ -222,14 +222,8 @@ effect for subsequent child server processes.
 
 =head1 README
 
-You will need the full Mail-POP3Server-2.21.tar.gz kit if
-this is the first time you have downloaded mpopd. The archive
-includes a sample config, access control file samples and a
-couple of tool/helper scripts.
-
-You can find it on CPAN or at:
-
-http://mpopd.fredo.co.uk/
+The distribution of Mail::POP3 includes a sample config, access control
+file samples and a couple of tool/helper scripts. You can find it on CPAN.
 
 First read and then edit mpopd.conf to suit your system.
 mpopd.conf is also the best documentation there is for now.
@@ -243,15 +237,9 @@ For mbox mail files mpopd can use an arbitrary start-of-message
 and end-of-message identifier for each message.
 These default to 'From ' and a blank line.
 
-=head2 Current test environment:
+=head2 Mail storage modes
 
-    Slackware Linux 7.1, 2.2.18 kernel
-    Perl 5.6.0
-    Crypt::PasswdMD5 1.1
-    Linux-PAM-0.74
-    Authen-PAM-0.11
-
-=head2 mpopd can be used in one of three modes:
+mpopd can be used in one of three modes:
 
 1. Disk-based mailbox handling, the entire mailbox is parsed
    and each message is written to a root-owned mpopd spool
@@ -288,7 +276,8 @@ of logging on a per user basis.
 
 =head2 COPYRIGHT
 
-Copyright (c) Mark Tiramani 1998-2001 <markjt@fredo.co.uk>.
+Copyright (c) Mark Tiramani 1998-2001 - up to version 2.21.
+Copyright (c) Ed J 2001+ - version 3+.
 All rights reserved. This program is free software; you can
 redistribute it and/or modify it under the same terms as Perl itself.
 

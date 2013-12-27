@@ -2,22 +2,13 @@
 
 use Config;
 
-sub from_file {
-    my $file = shift;
-    local (*FH, $/);
-    open FH, $file or die "$file: $!\n";
-    <FH>;
-}
-
-my $conf_dir = from_file('../.inst_dir');
-
 open OUTPUT, ">$ARGV[0]" or die "$ARGV[0]: $!\n";
 select OUTPUT;
 
 print << "!GROK!THIS!";
 $Config{'startperl'}
 
-my \$config_file = '$conf_dir/mpopd.conf';
+my \$config_file = '/usr/local/mpopd/mpopd.conf';
 !GROK!THIS!
 print << '!GROK!THIS!';
 my $config_editor = $ENV{EDITOR} || 'vi';
