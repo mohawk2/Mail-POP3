@@ -18,17 +18,17 @@ use Mail::POP3::Security::Connection;
 # UIDL is the Message-ID
 
 use vars qw($VERSION);
-$VERSION = "3.01";
+$VERSION = "3.02";
 
 sub read_config {
     my ($class, $config_text) = @_;
     my $config = eval $config_text;
     # mpopd config files have a version number of their own which must
-    # be the same as the POP3Server.pm version. As mpopd develops, new features
+    # be the same as the Mail::POP3 version. As mpopd develops, new features
     # may require new config items or syntax so the version number of
     # the config file must be checked first.
     die <<EOF if $config->{mpopd_conf_version} ne $VERSION;
-Sorry, POP3Server.pm v$VERSION requires an mpopd config file conforming
+Sorry, Mail::POP3 v$VERSION requires an mpopd config file conforming
 to config version '$VERSION'.
 Your config file is version '$config->{mpopd_conf_version}'
 EOF

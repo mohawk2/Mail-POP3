@@ -18,4 +18,4 @@ no_index:
     - t
     - inc
 requires: {}
-version: 3.01
+version: 3.02

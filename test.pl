@@ -20,49 +20,63 @@ $Data::Dumper::Indent = 1;
 $Data::Dumper::Terse = 2;
 
 my $fake_mbox = "/tmp/pop3.mbox.$$";
-my $fake_mbox_text = <<'EOF';
-From user  Tue Nov 13 23:38:04 2001
-Return-Path: <user@example.com>
-Received: (from user@localhost)
+my $msgid1 = '200111132338.fADNc4727035@example.com';
+my $msgid2 = '200111132338.fADNcNg27040@example.com';
+my $msgid3 = '200111132338.fADNcna27048@example.com';
+my $msg1from = "From user  Tue Nov 13 23:38:04 2001\n";
+my $msg1nofrom = <<EOF;
+Return-Path: <user\@example.com>
+Received: (from user\@localhost)
         by host.example.com (8.11.2/8.11.2) id fADNc4727035
         for user; Tue, 13 Nov 2001 23:38:04 GMT
 Date: Tue, 13 Nov 2001 23:38:04 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNc4727035@example.com>
-To: user@host.example.com
+From: User <user\@example.com>
+Message-Id: <$msgid1>
+To: user\@host.example.com
 Subject: test
 
-From user  Tue Nov 13 23:38:23 2001
-Return-Path: <user@example.com>
-Received: (from user@localhost)
+EOF
+my $msg1 = $msg1from . $msg1nofrom;
+my $msg2from = "From user  Tue Nov 13 23:38:23 2001\n";
+my $msg2nofrom = <<EOF;
+Return-Path: <user\@example.com>
+Received: (from user\@localhost)
         by host.example.com (8.11.2/8.11.2) id fADNcNg27040
         for user; Tue, 13 Nov 2001 23:38:23 GMT
 Date: Tue, 13 Nov 2001 23:38:23 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcNg27040@example.com>
-To: user@host.example.com
+From: User <user\@example.com>
+Message-Id: <$msgid2>
+To: user\@host.example.com
 Subject: test2
 
-From user  Tue Nov 13 23:38:49 2001
-Return-Path: <user@example.com>
-Received: (from user@localhost)
+EOF
+my $msg2 = $msg2from . $msg2nofrom;
+my $msg3from = "From user  Tue Nov 13 23:38:49 2001\n";
+my $msg3topnofrom = <<EOF;
+Return-Path: <user\@example.com>
+Received: (from user\@localhost)
         by host.example.com (8.11.2/8.11.2) id fADNcna27048
         for user; Tue, 13 Nov 2001 23:38:49 GMT
 Date: Tue, 13 Nov 2001 23:38:49 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcna27048@example.com>
-To: user@host.example.com
+From: User <user\@example.com>
+Message-Id: <$msgid3>
+To: user\@host.example.com
 Subject: test3
 
 it's got a
 longer
+EOF
+my $msg3bot = <<EOF;
 body
 
 EOF
+my $msg3nofrom = $msg3topnofrom . $msg3bot;
+my $msg3 = $msg3from . $msg3nofrom;
+my $fake_mbox_text = join '', $msg1, $msg2, $msg3;
 to_file($fake_mbox, $fake_mbox_text);
 my $tmpdir = "/tmp/pop3.mbox.tmpdir.$$";
 mkdir $tmpdir, 0700;
-my $config_text = <<'EOF';
+my $config_text = << "EOF";
 {
   'port' => '6110',
   'max_servers' => 10,
@@ -75,7 +89,7 @@ my $config_text = <<'EOF';
   'mpopd_spool' => 'out/mpopd_spool',
   'receivedfrom' => 'fredo.co.uk',
   'passsecret' => 1,
-  'greeting' => 'mpopd V3.0',
+  'greeting' => 'mpopd V3.x',
   'addreceived' => {
     'bob' => 1
   },
@@ -83,11 +97,11 @@ my $config_text = <<'EOF';
     'markjt' => 1
   },
   'message_start' => '^From ',
-  'message_end' => '^\\s+$',
+  'message_end' => '^\\s+\$',
   'mailgroup' => 12,
   'retry_on_lock' => 0,
   'mail_spool_dir' => '/var/spool/mail',
-  'mpopd_conf_version' => '3.0',
+  'mpopd_conf_version' => '$Mail::POP3::VERSION',
   'debug' => 1,
   'hosts_allow_deny' => '/usr/local/mpopd/mpopd_allow_deny',
   'timezone' => 'GMT',
@@ -131,10 +145,10 @@ my $tmpfh = IO::File::new_tmpfile();
 $mailbox->uidl_list($tmpfh);
 $tmpfh->seek(0, Fcntl::SEEK_SET);
 my $list = join '', <$tmpfh>;
-my $list_ref = <<'EOF';
-1 <200111132338.fADNc4727035@example.com>
-2 <200111132338.fADNcNg27040@example.com>
-3 <200111132338.fADNcna27048@example.com>
+my $list_ref = <<EOF;
+1 <$msgid1>
+2 <$msgid2>
+3 <$msgid3>
 .
 EOF
 $list_ref =~ s#\n#\015\012#g;
@@ -145,7 +159,7 @@ print "not "
 print "ok 4\n";
 
 print "not "
-    unless $mailbox->uidl(2) eq '<200111132338.fADNcNg27040@example.com>';
+    unless $mailbox->uidl(2) eq "<$msgid2>";
 print "ok 5\n";
 
 $mailbox->delete(2);
@@ -153,9 +167,9 @@ $tmpfh = IO::File::new_tmpfile();
 $mailbox->uidl_list($tmpfh);
 $tmpfh->seek(0, Fcntl::SEEK_SET);
 $list = join '', <$tmpfh>;
-$list_ref = <<'EOF';
-1 <200111132338.fADNc4727035@example.com>
-3 <200111132338.fADNcna27048@example.com>
+$list_ref = <<EOF;
+1 <$msgid1>
+3 <$msgid3>
 .
 EOF
 $list_ref =~ s#\n#\015\012#g;
@@ -169,22 +183,8 @@ $tmpfh = IO::File::new_tmpfile();
 $mailbox->top(3, $tmpfh, 2);
 $tmpfh->seek(0, Fcntl::SEEK_SET);
 my $top = join '', <$tmpfh>;
-my $top_ref = <<'EOF';
-Return-Path: <user@example.com>
-Received: (from user@localhost)
-        by host.example.com (8.11.2/8.11.2) id fADNcna27048
-        for user; Tue, 13 Nov 2001 23:38:49 GMT
-Date: Tue, 13 Nov 2001 23:38:49 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcna27048@example.com>
-To: user@host.example.com
-Subject: test3
-
-it's got a
-longer
-EOF
+my $top_ref = $msg3topnofrom;
 $top_ref =~ s#\n#\015\012#g;
-#warn "t: $top\ntr: $top_ref\n";
 print "not " unless $top eq $top_ref;
 print "ok 7\n";
 
@@ -192,24 +192,8 @@ $tmpfh = IO::File::new_tmpfile();
 $mailbox->retrieve(3, $tmpfh);
 $tmpfh->seek(0, Fcntl::SEEK_SET);
 my $retrieve = join '', <$tmpfh>;
-my $retrieve_ref = <<'EOF';
-Return-Path: <user@example.com>
-Received: (from user@localhost)
-        by host.example.com (8.11.2/8.11.2) id fADNcna27048
-        for user; Tue, 13 Nov 2001 23:38:49 GMT
-Date: Tue, 13 Nov 2001 23:38:49 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcna27048@example.com>
-To: user@host.example.com
-Subject: test3
-
-it's got a
-longer
-body
-
-EOF
+my $retrieve_ref = $msg3nofrom;
 $retrieve_ref =~ s#\n#\015\012#g;
-#warn "t: $retrieve\ntr: $retrieve_ref\n";
 print "not "
     unless $retrieve eq $retrieve_ref and
     $mailbox->octets(2) == 342;
@@ -234,34 +218,7 @@ print "ok 11\n";
 
 $mailbox->flush_delete;
 $mailbox->lock_release;
-my $flush_ref = <<'EOF';
-From user  Tue Nov 13 23:38:04 2001
-Return-Path: <user@example.com>
-Received: (from user@localhost)
-        by host.example.com (8.11.2/8.11.2) id fADNc4727035
-        for user; Tue, 13 Nov 2001 23:38:04 GMT
-Date: Tue, 13 Nov 2001 23:38:04 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNc4727035@example.com>
-To: user@host.example.com
-Subject: test
-
-From user  Tue Nov 13 23:38:49 2001
-Return-Path: <user@example.com>
-Received: (from user@localhost)
-        by host.example.com (8.11.2/8.11.2) id fADNcna27048
-        for user; Tue, 13 Nov 2001 23:38:49 GMT
-Date: Tue, 13 Nov 2001 23:38:49 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcna27048@example.com>
-To: user@host.example.com
-Subject: test3
-
-it's got a
-longer
-body
-
-EOF
+my $flush_ref = $msg1 . $msg3;
 print "not "
     unless from_file($fake_mbox) eq $flush_ref;
 print "ok 12\n";
@@ -281,53 +238,29 @@ DELE 2
 UIDL
 QUIT
 EOF
-my $pop3_ref = <<'EOF';
-+OK mpopd V3.0
+my $receivedheader = "Received: from fredo.co.uk\n    by mpopd V$Mail::POP3::VERSION";
+my $msg3receivednofrom = "$receivedheader\n$msg3nofrom";
+my $msg3receivednofromCRLF = $msg3receivednofrom;
+$msg3receivednofromCRLF =~ s#\n#\015\012#g;
+my $msg3length = length($msg3receivednofromCRLF) + 43; # 43 = length " for bob"
+my $pop3_ref = <<EOF;
++OK mpopd V3.x
 +OK bob send me your password
 +OK thanks bob...
 +OK unique-id listing follows
-1 <200111132338.fADNc4727035@example.com>
-2 <200111132338.fADNcNg27040@example.com>
-3 <200111132338.fADNcna27048@example.com>
+1 <$msgid1>
+2 <$msgid2>
+3 <$msgid3>
 .
 +OK top of message 3 follows
-Received: from fredo.co.uk
-    by mpopd V3.0
-Return-Path: <user@example.com>
-Received: (from user@localhost)
-        by host.example.com (8.11.2/8.11.2) id fADNcna27048
-        for user; Tue, 13 Nov 2001 23:38:49 GMT
-Date: Tue, 13 Nov 2001 23:38:49 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcna27048@example.com>
-To: user@host.example.com
-Subject: test3
-
-it's got a
-longer
-.
-+OK 460 octets
-Received: from fredo.co.uk
-    by mpopd V3.0
-Return-Path: <user@example.com>
-Received: (from user@localhost)
-        by host.example.com (8.11.2/8.11.2) id fADNcna27048
-        for user; Tue, 13 Nov 2001 23:38:49 GMT
-Date: Tue, 13 Nov 2001 23:38:49 GMT
-From: User <user@example.com>
-Message-Id: <200111132338.fADNcna27048@example.com>
-To: user@host.example.com
-Subject: test3
-
-it's got a
-longer
-body
-
-.
+$receivedheader
+$msg3topnofrom.
++OK $msg3length octets
+$msg3receivednofrom.
 +OK message 2 flagged for deletion
 +OK unique-id listing follows
-1 <200111132338.fADNc4727035@example.com>
-3 <200111132338.fADNcna27048@example.com>
+1 <$msgid1>
+3 <$msgid3>
 .
 +OK TTFN bob...
 EOF
@@ -344,7 +277,7 @@ $tmpfh2->seek(0, Fcntl::SEEK_SET);
 my $pop3 = join '', <$tmpfh2>;
 $pop3 =~ s#^\s*for bob.*?\r\n##gm;
 $pop3_ref =~ s#\n#\015\012#g;
-#warn "t: $pop3\ntr:$pop3_ref";
+#print Data::Dumper::Dumper($pop3, $pop3_ref);
 print "not " unless $pop3 eq $pop3_ref;
 print "ok 13\n";
 
