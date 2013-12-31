@@ -1,7 +1,10 @@
+README
 MANIFEST
 Makefile.PL
 TODO
-test.pl
+t/mailfolder.t
+t/pop3comms.t
+t/testcommon.pl
 testp3.pl
 lib/Mail/POP3.pm
 lib/Mail/POP3/Server.pm

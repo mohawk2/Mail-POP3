@@ -63,7 +63,8 @@ sub start {
     local $SIG{HUP} = $self->_make_closure(\&force_shutdown);
     local $SIG{TERM} = $self->_make_closure(\&force_shutdown);
     local $SIG{PIPE} = $self->_make_closure(\&force_shutdown);
-    local $SIG{USR1} = $self->_make_closure(\&force_shutdown);
+    local $SIG{USR1} = $self->_make_closure(\&force_shutdown)
+      unless $^O =~ /MSWin32/;
     local $SIG{SEGV} = $self->_make_closure(\&force_shutdown);
     # Catch kernel alarms and close gracefully if the client stalls
     local $SIG{ALRM} = $self->_make_closure(\&force_shutdown);
@@ -93,8 +94,11 @@ sub start {
             # from the client.
             # The whole read process is eval'ed. See man perlfunc -> portability
             eval {
-                die "alarm\n"
+                if ($^O !~ /MSWin32/) {
+                  # can_read doesn't work on win32! rely on it just blocking
+                  die "alarm\n"
                     unless $select->can_read($self->{CONFIG}->{timeout});
+                }
                 sysread $input_fh, $char, 1;
             };
             if ($@) {
@@ -114,6 +118,8 @@ sub start {
 #        $request =~ s/^([\s\w]{3,50})/$1/g;
         $request =~ s/\r|\n//g;
         my ($command, $arg, $arg1) = split /\s+/, $request, 3;
+	$arg = '' unless defined $arg;
+	$arg1 = '' unless defined $arg1;
         $command = uc $command;
         $self->log_user_entry("$command  $arg  $arg1");
         # Close and warn if an invalid command is received
@@ -432,7 +438,8 @@ sub log_entry {
         }
         $self->{DEBUG_FH} = IO::File->new(">>$self->{CONFIG}->{debug_log}")
             or die "open >>$self->{CONFIG}->{debug_log}: $!\n";
-        chown 0, "root", $self->{CONFIG}->{debug_log};
+        my $gid = $^O =~ /MSWin32/ ? 0 : getgrnam("root");
+        chown 0, $gid, $self->{CONFIG}->{debug_log};
         chmod 0600, $self->{CONFIG}->{debug_log};
     }
     my $logtime = localtime(time);

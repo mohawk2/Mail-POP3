@@ -30,6 +30,7 @@ sub new {
     $self->{MSG2FROMLINE} = {};
     $self->{MSG2TEXT} = {};
     $self->{TOTALOCTETS} = 0;
+    $self->{DELMESSAGECNT} = 0;
     $self->{DELTOTALOCTETS} = 0;
     $self;
 }
