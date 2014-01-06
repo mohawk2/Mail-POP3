@@ -8,6 +8,11 @@ WriteMakefile(
         'NAME' => 'Mail::POP3',
         'DISTNAME' => "Mail-POP3",
         'VERSION_FROM' => 'lib/Mail/POP3.pm',
+	PREREQ_PM => {
+	    'HTML::Form' => 0,
+	    'Email::Stuffer' => 0,
+	    'HTML::FormatText' => 0,
+	},
         'dist' => {
                 COMPRESS => "gzip -9f",
                 SUFFIX => "gz",

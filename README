@@ -7,7 +7,7 @@ correctly.
 
 SCRIPTS
 
-scripts/mpopd - the core. Read this to see how to use modules.
+mpopd - the core. Read this to see how to use modules.
 mpopdctl - gives command-line control of a running mpopd.
 mpopdstats - gives command-line statistics from mpopd.
 installscript - helps install mpopd and create configuration.

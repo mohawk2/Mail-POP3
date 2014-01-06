@@ -53,48 +53,6 @@ EOF
 $CONFIG{msg3nofrom} = $CONFIG{msg3topnofrom} . $CONFIG{msg3bot};
 $CONFIG{msg3} = $CONFIG{msg3from} . $CONFIG{msg3nofrom};
 $CONFIG{fake_mbox_text} = join '', $CONFIG{msg1}, $CONFIG{msg2}, $CONFIG{msg3};
-$CONFIG{config_text} = << "EOF";
-{
-  'port' => '6110',
-  'max_servers' => 10,
-  'mpopd_pid_file' => 'out/mpopd.pid',
-  'mpopd_pam_service' => 'mpopx',
-  'trusted_networks' => '/usr/local/mpopd/mpopd_trusted',
-  'userlist' => '.userlist',
-  'mpopd_failed_mail' => 'out/mpopd_failed_mail',
-  'host_mail_path' => '/var/spool/popmail',
-  'mpopd_spool' => 'out/mpopd_spool',
-  'receivedfrom' => 'fredo.co.uk',
-  'passsecret' => 1,
-  'greeting' => 'mpopd V3.x',
-  'addreceived' => {
-    'bob' => 1
-  },
-  'user_log' => {
-    'markjt' => 1
-  },
-  'message_start' => '^From ',
-  'message_end' => '^\\s+\$',
-  'mailgroup' => 12,
-  'retry_on_lock' => 0,
-  'mail_spool_dir' => '/var/spool/mail',
-  'mpopd_conf_version' => '$Mail::POP3::VERSION',
-  'debug' => 1,
-  'hosts_allow_deny' => '/usr/local/mpopd/mpopd_allow_deny',
-  'timezone' => 'GMT',
-  'timeout' => 10,
-  'user_log_dir' => 'out/mpopd_log',
-  'debug_log' => 'out/mpopd.log.main',
-  'reject_bogus_user' => 0,
-  'allow_non_fqdn' => 1,
-  'user_debug' => {
-  },
-  'connection_class' => 'Mail::POP3::Security::Connection',
-  fork_alert => ">/usr/local/mpopd/fork_alert",
-  user_check => sub { 1 },
-  password_check => sub { 1 },
-  mailbox_class => 'Mail::POP3::Folder::mbox::parse_to_disk',
-}
-EOF
+$CONFIG{outdir} = File::Temp->newdir;
 
 1;

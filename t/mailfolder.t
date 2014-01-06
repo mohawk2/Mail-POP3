@@ -15,9 +15,11 @@ my $fake_mbox = File::Temp->new;
 print $fake_mbox $CONFIG{fake_mbox_text};
 $fake_mbox->seek(0, Fcntl::SEEK_SET);
 my $tmpdir = File::Temp->newdir;
-my $config = Mail::POP3->read_config($CONFIG{config_text});
-$config->{mailbox_args} = sub {
-  (
+ok(1, 'test env set up');
+
+my $mailbox = Mail::POP3::Folder::mbox::parse_to_disk->new(
+    'user',
+    'password',
     $<,
     $(,
     $fake_mbox,
@@ -25,14 +27,6 @@ $config->{mailbox_args} = sub {
     '^\\s*$',
     $tmpdir,
     0, # debug
-  );
-};
-ok(1, 'config read');
-
-my $mailbox = Mail::POP3::Folder::mbox::parse_to_disk->new(
-    'user',
-    'password',
-    $config->{mailbox_args}->(),
 );
 ok($mailbox->lock_acquire, 'lock_acquire');
 

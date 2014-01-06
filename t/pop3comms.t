@@ -5,17 +5,62 @@ our %CONFIG;
 do 't/testcommon.pl';
 
 use File::Temp;
+use Net::POP3;
 
 END {ok(0, 'loaded') unless $::loaded;}
 use Mail::POP3;
 $::loaded = 1;
 ok(1, 'loaded');
 
+my $config_text = << "EOF";
+{
+  'port' => '6110',
+  'max_servers' => 10,
+  'mpopd_pid_file' => '$CONFIG{outdir}/mpopd.pid',
+  'mpopd_pam_service' => 'mpopx',
+  'trusted_networks' => '/usr/local/mpopd/mpopd_trusted',
+  'userlist' => '.userlist',
+  'mpopd_failed_mail' => '$CONFIG{outdir}/mpopd_failed_mail',
+  'host_mail_path' => '/var/spool/popmail',
+  'mpopd_spool' => '$CONFIG{outdir}/mpopd_spool',
+  'receivedfrom' => 'fredo.co.uk',
+  'passsecret' => 1,
+  'greeting' => 'mpopd V3.x',
+  'addreceived' => {
+    'bob' => 1
+  },
+  'user_log' => {
+    'markjt' => 1
+  },
+  'message_start' => '^From ',
+  'message_end' => '^\\s+\$',
+  'mailgroup' => 12,
+  'retry_on_lock' => 0,
+  'mail_spool_dir' => '/var/spool/mail',
+  'mpopd_conf_version' => '$Mail::POP3::VERSION',
+  'debug' => 1,
+  'hosts_allow_deny' => '/usr/local/mpopd/mpopd_allow_deny',
+  'timezone' => 'GMT',
+  'timeout' => 10,
+  'user_log_dir' => '$CONFIG{outdir}/mpopd_log',
+  'debug_log' => '$CONFIG{outdir}/mpopd.log.main',
+  'reject_bogus_user' => 0,
+  'allow_non_fqdn' => 1,
+  'user_debug' => {
+  },
+  'connection_class' => 'Mail::POP3::Security::Connection',
+  fork_alert => ">/usr/local/mpopd/fork_alert",
+  user_check => sub { 1 },
+  password_check => sub { 1 },
+  mailbox_class => 'Mail::POP3::Folder::mbox::parse_to_disk',
+}
+EOF
+
 my $fake_mbox = File::Temp->new;
 print $fake_mbox $CONFIG{fake_mbox_text};
 $fake_mbox->seek(0, Fcntl::SEEK_SET);
 my $tmpdir = File::Temp->newdir;
-my $config = Mail::POP3->read_config($CONFIG{config_text});
+my $config = Mail::POP3->read_config($config_text);
 $config->{mailbox_args} = sub {
   (
     $<,
@@ -29,7 +74,6 @@ $config->{mailbox_args} = sub {
 };
 ok(1, 'config read');
 
-print $fake_mbox $CONFIG{fake_mbox_text};
 my $tmpfh = File::Temp->new;
 $tmpfh->print(<<EOF);
 USER bob

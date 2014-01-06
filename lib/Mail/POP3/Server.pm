@@ -133,7 +133,6 @@ sub start {
         }
         $COMMAND2FUNC{$command}->($self, $arg, $arg1);
     }
-USERQUIT:
 }
 
 sub commandUSER {
@@ -451,7 +450,7 @@ sub log_entry {
 sub shutdown {
     my $self = shift;
     close $self->{INPUT_FH};
-    goto USERQUIT;
+    exit(0);
 }
 
 1;

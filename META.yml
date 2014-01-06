@@ -17,5 +17,8 @@ no_index:
   directory:
     - t
     - inc
-requires: {}
-version: 3.03
+requires:
+  Email::Stuffer: 0
+  HTML::Form: 0
+  HTML::FormatText: 0
+version: 3.04

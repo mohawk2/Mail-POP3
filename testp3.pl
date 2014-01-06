@@ -6,7 +6,11 @@ use Net::POP3;
 my ($host, $port, $user, $pass) = @ARGV;
 die "Usage: $0 host port user password\n" unless $pass;
 
-my $pop3 = Net::POP3->new($host, Port => $port);#, Debug => 1);
+my $pop3 = Net::POP3->new(
+  $host,
+  Port => $port,
+  Debug => 1,
+);
 
 my $msgs = $pop3->login($user, $pass);
 die "Failed to open mailbox\n" unless defined $msgs;
