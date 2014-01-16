@@ -1,7 +1,17 @@
+3.05
+Put testp3.pl into scripts - useful POP3-talking test script.
+Change dependency on Email::Stuffer to Email::MIME in conf/jobserve.conf
+and t/webscrape.t - far fewer dependencies, better fit for requirement.
+New scripts/ entry - mailbox-test, which exercises a mailbox class from
+a given conf file.
+New scripts/ entry - webscrape, which exercises *::webscrape from a
+given conf file, allowing development/testing of that class.
+
 3.04
 Use another tmpdir instead of "out" in t/testcommon.pl's server config
 so an "out" directory is not left in the source directory after tests.
-make t/jobserve.t - jobserve.pm requires HTML::Form
+Rename *::Folder::virtual::jobserve to *::Folder::webscrape
+make t/webscrape.t
 
 3.03 2013/12/31
 Moved tests to t/*.t. Changes for Win32: if Win32, don't install SIGUSR1

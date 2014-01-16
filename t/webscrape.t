@@ -62,14 +62,14 @@ HTML
   MESSAGESIZE => 1000,
   messagelines => 5,
   messagetext => <<'EOF',
-Date: Fri, 03 Jan 2014 09:33:47 GMT (GMT)
-MIME-Version: 1.0
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
 To: madeup@example.com
 From: madeup@example.com
 Subject: Perl Developer - Jobserve ref JSPERL DEVELOPER
 Message-ID: 928F11260DD14DF7@jobserve.com
+Date: Fri, 03 Jan 2014 09:33:47 GMT (GMT)
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
 <h1>Permanent: Perl Developer</h1>
 <p>
@@ -155,11 +155,13 @@ my $mailbox = Mail::POP3::Folder::webscrape->new(
     sub { ($_[0] =~ m#/W([^-]+)\.jsjob$#)[0] . '@jobserve.com'; },
     sub {
       use POSIX qw(strftime);
-      use Email::Stuffer;
+      use Email::MIME;
       my ($j, $message_id) = @_;
       my ($mday, $mon, $year, $hour, $min, $sec) = split /[\/\s:]/, $j->{posted};
       my $date = strftime "%a, %d %b %Y %H:%M:%S GMT (GMT)", 
 	$sec, $min, $hour, $mday, $mon - 1, $year - 1900;
+      my $subject = "$j->{title} - Jobserve ref $j->{reference}";
+      $subject =~ s#[\x80-\xFF]##g; # remove 8-bit chars from Subject - KISS
       my $html_body = <<EOF;
 <h1>$j->{type}: $j->{title}</h1>
 <p>
@@ -179,16 +181,21 @@ Posted Date: $j->{posted}<br>
 Job listing: <a href="$j->{joblink}">$j->{joblink}</a><br>
 </p>
 EOF
-      my $subject = "$j->{title} - Jobserve ref $j->{reference}";
-      $subject =~ s#[\x80-\xFF]##g; # remove 8-bit chars from Subject - KISS
-      my $e = Email::Stuffer->to('madeup@example.com')
-	->from($j->{email} || 'madeup@example.com')
-	->subject($subject)
-	->header('Message-ID' => $message_id)
-	->html_body($html_body)
-	;
-      $e = $e->email; # now an Email::MIME
-      $e->header_set(Date => $date); # if set in Email::Stuffer, gets ignored
+      my $e = Email::MIME->create(
+	header => [
+	  To => 'madeup@example.com',
+	  From => ($j->{email} || 'madeup@example.com'),
+	  Subject => $subject,
+	  'Message-ID' => $message_id,
+	  Date => $date,
+	],
+	attributes => {
+	  content_type => 'text/html',
+	  charset      => 'utf-8',
+	  encoding     => 'quoted-printable',
+	},
+	body_str => $html_body,
+      );
       $e->as_string;
     },
     $CONFIG{MESSAGESIZE}, # message size either padded or truncated to this
@@ -246,6 +253,7 @@ $topref_body = join "\n",
   (split /\n/, $topref_body)[0..$CONFIG{messagelines}-1];
 my $top_ref = join("\n\n", $topref_head, $topref_body) . "\n.\n";
 $top_ref =~ s#\n#\015\012#g;
+#warn "t: ($top)\ntr: ($top_ref)\n";
 ok($top eq $top_ref, 'top');
 
 $tmpfh = File::Temp->new;

@@ -7,6 +7,6 @@ use ExtUtils::MakeMaker qw(WriteMakefile);
 WriteMakefile(
         NAME => 'Mail::POP3-scripts',
         EXE_FILES => [qw(
-            installscript mpopd mpopdctl mpopdstats update-conf
+            testp3 installscript mpopd mpopdctl mpopdstats update-conf
         )],
 );

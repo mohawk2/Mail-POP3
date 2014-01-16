@@ -365,39 +365,112 @@ __END__
 
 =head1 NAME
 
-Mail::POP3::Folder::webscrape - class that makes a website look like a POP3 mailbox
+Mail::POP3::Folder::webscrape - class that makes a website look like a
+POP3 mailbox
+
+=head1 SYNOPSIS
+
+  use Mail::POP3;
+  my $m = Mail::POP3::Folder::webscrape->new(
+    $user_name,
+    $password,
+    $starturl, # where the first form is found
+    $userfieldnames, # listref same order as values supplied in USER
+    $otherfields, # hash fieldname => value
+    $listre, # field => RE; fields: pageno, num_pages, nextlink, itemurls
+    $itemre, # hash extractfield => RE to get it from "page"
+    $itempostpro, # extractfield => sub returns pairS of field/value
+    $itemurl2id, # sub taking URL, returns unique, persistent item ID
+    $itemformat, # takes item hash, returns email message
+    $messagesize,
+  );
 
 =head1 DESCRIPTION
 
 This class makes a website look like a POP3 mailbox in accordance with the
-requirements of a POP3 server. It is entirely API-compatible with
+requirements of a L<Mail::POP3> server. It is entirely API-compatible with
 L<Mail::POP3::Folder::mbox>.
 
-The username is interpreted as a ":"-separated string, also "URL-encoded" such that spaces are encoded as "+" characters. The information contained in the POP3 username is four items:
+The virtual e-mails will all be at least (the amount specified in
+the last parameter to C<new> - recommend 2000) octets long, being padded
+to this length. While it should truncate if necessary, the class currently
+does not.
+
+=head1 PARAMETERS
 
 =over 5
 
-=item Job Type
+=item C<$user_name>
 
-Either C<P> (permanent), C<C> (contract) or C<*> (either).
+The username is interpreted as a ":"-separated string, also "URL-encoded"
+such that spaces are encoded as "+" characters. The values supplied will
+be for variables named in the C<$userfieldnames> parameter.
 
-=item Posted within (in days)
+=item C<$password>
 
-1-5.
+The password is ignored.
 
-=item Sort hits by
+=item C<$starturl>
 
-Either C<Rank> or C<DateTime>, being either the matching score or most recent first.
+The webpage that contains the initial search form.
 
-=item User-specified query
+=item C<$userfieldnames>
 
-See Jobserve website, http://www.jobserve.com/, for possibilities.
+A reference to a list of the names of CGI variables whose values are
+supplied by the POP3 user in the username.
+
+=item C<$otherfields>
+
+Reference to hash of CGI field mapped to value.
+
+=item C<$listre>
+
+Reference to hash of fieldname mapped to regular expression for finding
+the relevant value on each search result page. The value is expected to
+be in C<$1>. These fields must be defined: C<pageno>, C<num_pages>,
+C<nextlink>, C<itemurls>. The last may (obviously) match more than once.
+
+=item C<$itemre>
+
+Reference to hash of fieldname mapped to regular expression for finding
+the relevant value on each item's page (as linked to by an C<itemurl>
+as found from the above parameter), similar to the above. Any number
+of fields may be sought, and a hash of the fieldname to the found value
+will be passed to the item-formatting function below.
+
+=item C<$itempostpro>
+
+Reference to hash of fieldname mapped to reference to function that is
+called with the field name and value, and will return a list of one or
+more pairs of fieldname / value. Typical use might be to remove HTML
+from a result.
+
+=item C<$itemurl2id>
+
+Reference to function that is called with each C<itemurl>, and will
+return a unique, persistent identifier for that item, compatible with
+an RFC 1939 message ID.
+
+=item C<$itemformat>
+
+Reference to function that is called for each item, taking two parameters:
+a reference to a hash of fieldname / value (as extracted by the "item RE"
+above), and the unique message-ID (as generated above); and will return
+the text of an email message describing that item.
+
+=item C<$messagesize>
+
+The size of each message, in the style of Procrustes. This is so the class
+can return an accurate(ish) result for the POP3 command STAT knowing
+only the number of hits there have been, and not having downloaded and
+formatted every single item to see how large each one is - such an extra
+step would probably trigger timeouts.
 
 =back
 
-Only IT jobs are currently searched for. The virtual e-mails will be
-exactly 1000 octets long, being either padded or truncated (unlikely)
-to this length.
+A script C<webscrape> is supplied in the C<scripts> subdirectory of the
+distribution that can be used to test and develop a working configuration
+for this class.
 
 =head1 METHODS
 

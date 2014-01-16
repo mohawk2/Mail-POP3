@@ -23,10 +23,10 @@ Mail::POP3::Folder::* classes handles the mail folders.
 
 This last characteristic means that diverse sources of information can
 be served up as though they are a POP3 mailbox by implementing a M::P::F
-subclass. An example is provided in M::P::F::jobserve.
+subclass. An example is provided in M::P::F::webscrape.
 
 FUTURE
 
 This module will become a Net::Server subclass, such that the Folder
 functionality will be folded back into the server, in a class called
-(probably) Net::Server::POP3::jobserve (etc).
+(probably) Net::Server::POP3::webscrape (etc).
