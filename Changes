@@ -1,3 +1,7 @@
+3.06
+webscrape.t "top" and "retr" tests failing on some arch: use "is" to
+get actual output from CPAN Testers network.
+
 3.05
 Put testp3.pl into scripts - useful POP3-talking test script.
 Change dependency on Email::Stuffer to Email::MIME in conf/jobserve.conf

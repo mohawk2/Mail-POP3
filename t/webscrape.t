@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 10;
+use Test::More tests => 11;
 
 use File::Temp;
 
@@ -254,7 +254,7 @@ $topref_body = join "\n",
 my $top_ref = join("\n\n", $topref_head, $topref_body) . "\n.\n";
 $top_ref =~ s#\n#\015\012#g;
 #warn "t: ($top)\ntr: ($top_ref)\n";
-ok($top eq $top_ref, 'top');
+is($top, $top_ref, 'top');
 
 $tmpfh = File::Temp->new;
 $mailbox->retrieve(1, $tmpfh);
@@ -268,13 +268,8 @@ $retrieve_ref .= (' ' x ($CONFIG{MESSAGESIZE} - length($retrieve_ref) - 2))
 $retrieve_ref =~ s#\n#\015\012#g;
 #warn "rrl: ".length($retrieve_ref)."\n";
 #warn "rr: ($retrieve_ref)\n";
-ok(
-  (
-    $retrieve eq $retrieve_ref
-#    and $mailbox->octets(2) == $CONFIG{MESSAGESIZE}
-  ),
-  'retr',
-);
+is($retrieve, $retrieve_ref, 'retr');
+ok($mailbox->octets(2) == $CONFIG{MESSAGESIZE}, 'retr octets');
 
 ok(!$mailbox->is_valid(2) and $mailbox->is_valid(3), 'is_valid');
 

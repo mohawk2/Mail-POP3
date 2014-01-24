@@ -18,7 +18,7 @@ use Mail::POP3::Security::Connection;
 # UIDL is the Message-ID
 
 use vars qw($VERSION);
-$VERSION = "3.05";
+$VERSION = "3.06";
 
 sub read_config {
     my ($class, $config_text) = @_;
