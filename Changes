@@ -1,3 +1,6 @@
+3.07
+webscrape.t fails if LANG=ru_RU.utf8 - fix
+
 3.06
 webscrape.t "top" and "retr" tests failing on some arch: use "is" to
 get actual output from CPAN Testers network.

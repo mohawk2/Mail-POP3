@@ -22,4 +22,4 @@ requires:
   HTML::Form: 0
   HTML::FormatText: 0
   HTTP::Cookies: 0
-version: 3.06
+version: 3.07

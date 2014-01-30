@@ -154,7 +154,8 @@ my $mailbox = Mail::POP3::Folder::webscrape->new(
 # use Carp;Carp::cluck "X";
     sub { ($_[0] =~ m#/W([^-]+)\.jsjob$#)[0] . '@jobserve.com'; },
     sub {
-      use POSIX qw(strftime);
+      use POSIX qw(strftime locale_h);
+      setlocale(LC_TIME, 'en_US.UTF-8'); # this test relies on English output
       use Email::MIME;
       my ($j, $message_id) = @_;
       my ($mday, $mon, $year, $hour, $min, $sec) = split /[\/\s:]/, $j->{posted};
