@@ -1,3 +1,6 @@
+3.08
+webscrape.t still failed on Strawberry Perl if LANG=ru_RU.utf8 - fix
+
 3.07
 webscrape.t fails if LANG=ru_RU.utf8 - fix
 
