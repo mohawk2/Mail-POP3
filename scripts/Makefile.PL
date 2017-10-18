@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker qw(WriteMakefile);
 
 #--- Make the Makefile.
 WriteMakefile(
-        NAME => 'Mail::POP3-scripts',
+        NAME => 'Mail::POP3::scripts',
         EXE_FILES => [qw(
             testp3 installscript mpopd mpopdctl mpopdstats update-conf
         )],
