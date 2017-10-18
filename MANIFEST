@@ -1,5 +1,5 @@
 Changes
-README
+README.md
 README-v2.21
 MANIFEST
 Makefile.PL
@@ -32,5 +32,3 @@ conf/mpopd.conf
 conf/mpopd_allow_deny
 conf/mpopd_trusted
 conf/second.conf
-META.yml                                 Module YAML meta-data (added by MakeMaker)
-META.json                                Module JSON meta-data (added by MakeMaker)
