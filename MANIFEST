@@ -7,6 +7,7 @@ conf/mpopd_trusted
 conf/second.conf
 lib/Mail/POP3.pm
 lib/Mail/POP3/Daemon.pm
+lib/Mail/POP3/Folder.pm
 lib/Mail/POP3/Folder/maildir.pm
 lib/Mail/POP3/Folder/mbox.pm
 lib/Mail/POP3/Folder/mbox/parse_to_disk.pm
