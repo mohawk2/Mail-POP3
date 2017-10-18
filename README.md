@@ -86,6 +86,22 @@ This module will become a [Net::Server](https://metacpan.org/pod/Net::Server) su
 functionality will be folded back into the server, in a class called
 (probably) `Net::Server::POP3::webscrape` (etc).
 
+# METHODS
+
+All class methods.
+
+## from\_file
+
+Given a file, returns contentx.
+
+## make\_sane
+
+Mutates given config hashref to have good, default values.
+
+## read\_config
+
+Given config text, evals it then version-checks.
+
 # COPYRIGHT
 
 Copyright (c) Mark Tiramani 1998-2001 - up to version 2.21.

@@ -168,6 +168,22 @@ This module will become a L<Net::Server> subclass, such that the Folder
 functionality will be folded back into the server, in a class called
 (probably) C<Net::Server::POP3::webscrape> (etc).
 
+=head1 METHODS
+
+All class methods.
+
+=head2 from_file
+
+Given a file, returns contentx.
+
+=head2 make_sane
+
+Mutates given config hashref to have good, default values.
+
+=head2 read_config
+
+Given config text, evals it then version-checks.
+
 =head1 COPYRIGHT
 
 Copyright (c) Mark Tiramani 1998-2001 - up to version 2.21.
