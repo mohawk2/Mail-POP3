@@ -1,3 +1,16 @@
+Revision history for Mail::POP3
+
+3.09	Wed Oct 18 05:23:03 BST 2017
+- introduce sane MANIFEST.SKIP et al
+- zap sub Makefile.PL
+- docs
+- xt tests
+- tests handle no . in @INC
+- repo metadata
+- generate README.md from module
+- incorporate README into POD
+- reformat Changes
+
 3.08
 - webscrape.t still failed on Strawberry Perl if LANG=ru_RU.utf8 - fix
 
