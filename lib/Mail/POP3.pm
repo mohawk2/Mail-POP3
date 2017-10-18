@@ -104,18 +104,16 @@ as C<+>), location radius in miles, location (e.g. Berlin). E.g. the
 username C<perl:5:Berlin> would search for jobs relating to Perl within
 5 miles of Berlin.
 
-=head2 COPYRIGHT
+=head1 COPYRIGHT
 
 Copyright (c) Mark Tiramani 1998-2001 - up to version 2.21.
 Copyright (c) Ed J 2001+ - version 3+.
 All rights reserved. This program is free software; you can
 redistribute it and/or modify it under the same terms as Perl itself.
 
-=head2 DISCLAIMER
+=head1 DISCLAIMER
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the Artistic License for more details.
-
-=cut
