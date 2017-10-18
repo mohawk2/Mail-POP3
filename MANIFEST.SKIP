@@ -10,3 +10,7 @@ MYMETA\..*
 ^Makefile.bak$
 pm_to_blib
 \.swp$
+scripts/mpopd
+scripts/mpopdctl
+scripts/mpopdstats
+scripts/update-conf
