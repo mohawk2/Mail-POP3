@@ -1,0 +1,4 @@
+scripts/mpopd
+scripts/mpopdctl
+scripts/mpopdstats
+scripts/update-conf
