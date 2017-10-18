@@ -12,7 +12,12 @@ WriteMakefile(
     'Email::MIME' => 0,
     'HTML::FormatText' => 0,
   },
-  DIR => [qw(scripts)],
+  EXE_FILES => [map "scripts/$_", qw(
+    testp3 installscript mpopd mpopdctl mpopdstats update-conf
+  )],
+  PL_FILES => {map { ("scripts/$_.PL" => "scripts/$_") } qw(
+    mpopd mpopdctl mpopdstats update-conf
+  )},
   META_MERGE => {
     "meta-spec" => { version => 2 },
     dynamic_config => 0,

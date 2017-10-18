@@ -20,8 +20,6 @@ README-v2.21
 README.md
 scripts/installscript
 scripts/mailbox-test
-scripts/Makefile
-scripts/Makefile.PL
 scripts/mpopd.PL
 scripts/mpopdctl.PL
 scripts/mpopdstats.PL
