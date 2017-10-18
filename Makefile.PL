@@ -16,6 +16,18 @@ WriteMakefile(
   DIR => [qw(scripts)],
   META_MERGE => {
     "meta-spec" => { version => 2 },
+    dynamic_config => 0,
+    resources => {
+      repository => {
+        type => 'git',
+        url => 'git@github.com:mohawk2/Mail-POP3.git',
+        web => 'https://github.com/mohawk2/Mail-POP3',
+      },
+      bugtracker  => {
+        web => 'https://github.com/mohawk2/Mail-POP3/issues',
+      },
+      license => [ 'http://dev.perl.org/licenses/' ],
+    },
     prereqs => {
       develop => {
         requires => {
