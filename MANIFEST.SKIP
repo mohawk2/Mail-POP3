@@ -1,6 +1,6 @@
 MANIFEST.SKIP
 MANIFEST.bak
-.git\/
+^\.git\/
 ^.gitignore
 ^.travis.yml
 blib\/
